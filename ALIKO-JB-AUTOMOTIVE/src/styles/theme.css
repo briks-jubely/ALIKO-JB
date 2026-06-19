@@ -1,50 +1,55 @@
-.card{
+.panel{
 
-background:
-var(--surface);
+display:flex;
+
+gap:16px;
+
+min-height:160px;
+
+background:var(--surface);
+
+border-radius:20px;
 
 padding:20px;
 
-border-radius:
-var(--radius);
-
-box-shadow:
-var(--shadow);
-
-margin-bottom:18px;
+overflow:hidden;
 
 }
 
-.title{
+/* Premium vertical indicator */
 
-font-size:28px;
+.panel-line{
 
-font-weight:700;
+width:3px;
 
-}
+align-self:stretch;
 
-.subtitle{
-
-color:
-var(--muted);
-
-margin-top:10px;
-
-}
-
-.btn{
+border-radius:999px;
 
 background:
-var(--primary);
 
-border:none;
+linear-gradient(
+180deg,
+#00C2FF 0%,
+#FF8A00 100%
+);
 
-width:100%;
+opacity:.95;
 
-padding:16px;
+flex-shrink:0;
 
-border-radius:14px;
+}
 
-font-weight:700;
+/* Content */
+
+.panel-body{
+
+flex:1;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
 
 }
