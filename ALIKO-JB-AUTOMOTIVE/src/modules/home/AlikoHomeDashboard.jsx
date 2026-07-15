@@ -3,17 +3,18 @@ import AlikoWidgetCard from "../../components/widgets/AlikoWidgetCard";
 import AlikoAlertsWidget from "./AlikoAlertsWidget";
 
 export default function AlikoHomeDashboard() {
-  const telemetry = useAlikoJBStore((s) => s.telemetry);
+    const fleet = useAlikoJBStore((s) => s.fleet);
 
-  return (
-    <div>
-      <AlikoWidgetCard title="Engine Live Data">
-        Temperature: {telemetry.engineTemp}°C<br/>
-        Battery: {telemetry.battery}%<br/>
-        Speed: {telemetry.speed} km/h
-      </AlikoWidgetCard>
+    const vehicles = Object.values(fleet);
 
-      <AlikoAlertsWidget />
-    </div>
-  );
+    return (
+        <div>
+            <AlikoWidgetCard title="Fleet Live Data">
+                Vehicles: {vehicles.length}<br/>
+                Active Vehicles: {vehicles.filter(v => v?.speed > 0).length}
+            </AlikoWidgetCard>
+
+            <AlikoAlertsWidget />
+        </div>
+    );
 }

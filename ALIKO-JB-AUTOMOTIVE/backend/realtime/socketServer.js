@@ -1,56 +1,42 @@
-import { WebSocketServer } from "ws";
+const { Server } = require("socket.io");
 
-const wss = new WebSocketServer({ port: 8082 });
-
-console.log("⚡ ALIKO Fleet GPS Server running");
-
-let clients = [];
-
-wss.on("connection", (ws) => {
-  clients.push(ws);
-
-  ws.on("close", () => {
-    clients = clients.filter(c => c !== ws);
-  });
+const io = new Server(8082, {
+  cors: {
+    origin: "*",
+  },
 });
 
-// 🟢 Base GPS positions (London area example)
-const vehicles = {
-  V1: { lat: 51.5074, lng: -0.1278 },
-  V2: { lat: 51.5174, lng: -0.1378 },
-  V3: { lat: 51.5274, lng: -0.1478 },
-};
+console.log("⚡ ALIKO Socket.IO Server running on 8082");
 
-// 🟢 simulate movement
-function moveRandom(pos) {
-  return {
-    lat: pos.lat + (Math.random() - 0.5) * 0.001,
-    lng: pos.lng + (Math.random() - 0.5) * 0.001,
-  };
-}
+io.on("connection", (socket) => {
+  console.log("🟢 Client connected:", socket.id);
 
-setInterval(() => {
-  Object.keys(vehicles).forEach((id) => {
+  socket.on("vehicle:update", (data) => {
+    console.log("📡 VEHICLE UPDATE:", data);
 
-    vehicles[id] = moveRandom(vehicles[id]);
+    // broadcast to all clients
+    io.emit("vehicle:update", {
+      ...data,
+      timestamp: Date.now(),
+    });
 
-    const payload = JSON.stringify({
-      type: "FLEET_GPS",
-      id,
-      data: {
-        ...vehicles[id],
-        speed: Math.floor(Math.random() * 120),
-        engineTemp: Math.floor(70 + Math.random() * 30),
-        battery: Math.floor(20 + Math.random() * 80),
+    // simple alert rules
+    const alerts = [];
+
+    if (data.speed > 100) alerts.push("OVERSPEED");
+    if (data.engineTemp > 100) alerts.push("OVERHEAT");
+    if (data.battery < 20) alerts.push("LOW_BATTERY");
+
+    if (alerts.length > 0) {
+      io.emit("vehicle:alert", {
+        vehicleId: data.id,
+        alerts,
         timestamp: Date.now(),
-      }
-    });
-
-    clients.forEach(ws => {
-      if (ws.readyState === 1) {
-        ws.send(payload);
-      }
-    });
-
+      });
+    }
   });
-}, 2000);
+
+  socket.on("disconnect", () => {
+    console.log("🔴 Client disconnected:", socket.id);
+  });
+});

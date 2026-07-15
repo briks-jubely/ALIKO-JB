@@ -128,3 +128,55 @@ padding-left:18px;
 
 }
 
+
+/* =========================
+   ALIKO MISSION CONTROL - OVERVIEW
+========================= */
+
+.home-overview{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.aliko-card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:14px;
+    padding:18px;
+    color:#fff;
+    transition:.25s;
+}
+
+.aliko-card:hover{
+    transform:translateY(-3px);
+    border-color:#2563eb;
+}
+
+.aliko-card h3{
+    margin-bottom:14px;
+}
+
+.metric{
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
+}
+
+.aliko-card button{
+    margin-top:14px;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+}
+
+.aliko-home-dashboard{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

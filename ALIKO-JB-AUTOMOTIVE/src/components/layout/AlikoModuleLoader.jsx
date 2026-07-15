@@ -1,14 +1,22 @@
-import { useAlikoJBStore } from "../../store/alikoJBStore";
+import { useAlikoNavStore } from "../../store/alikoNavStore";
 import { ALIKO_MODULE_REGISTRY } from "../../core/moduleRegistry";
 
+
 export default function AlikoModuleLoader() {
-  const activeModule = useAlikoJBStore(
-    (state) => state.activeModule
+
+  const active = useAlikoNavStore(
+    (state)=>state.active
   );
 
-  const ActiveComponent =
-    ALIKO_MODULE_REGISTRY[activeModule] ||
+
+  const key = active.toLowerCase();
+
+
+  const Module =
+    ALIKO_MODULE_REGISTRY[key] ||
     ALIKO_MODULE_REGISTRY.home;
 
-  return <ActiveComponent />;
+
+  return <Module />;
+
 }

@@ -9,11 +9,16 @@
     "start": "node backend/server.js"
   },
   "dependencies": {
+    "eruda": "^3.4.3",
     "express": "^5.2.1",
+    "firebase": "^12.15.0",
     "leaflet": "^1.9.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-leaflet": "^5.0.0",
+    "recharts": "^3.9.2",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
     "ws": "^8.21.0",
     "zustand": "^5.0.14"
   },

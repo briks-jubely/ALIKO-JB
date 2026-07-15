@@ -1,30 +1,37 @@
-export class AlikoSocket {
-  constructor(onMessage) {
-    this.onMessage = onMessage;
-    this.ws = null;
-  }
+import { io } from "socket.io-client";
+import { useAlikoJBStore } from "../store/alikoJBStore";
 
-  connect() {
-    this.ws = new WebSocket("ws://localhost:8082");
+const socket = io("http://localhost:8082", {
+  transports: ["websocket"],
+  autoConnect: false,
+});
 
-    this.ws.onopen = () => {
-      console.log("⚡ Connected to ALIKO Realtime Engine");
-    };
+let started = false;
 
-    this.ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      this.onMessage(data);
-    };
+export const AlikoSocket = {
+  connect: () => {
+    if (!socket.connected) socket.connect();
+  },
 
-    this.ws.onclose = () => {
-      console.log("❌ Disconnected. Reconnecting...");
-      setTimeout(() => this.connect(), 2000);
-    };
-  }
+  start: () => {
+    if (started) return;
+    started = true;
 
-  send(data) {
-    if (this.ws?.readyState === 1) {
-      this.ws.send(JSON.stringify(data));
-    }
-  }
-}
+    socket.on("vehicle:update", (msg) => {
+      const { id, data } = msg;
+      if (!id || !data) return;
+
+      useAlikoJBStore.getState().setFleetVehicle(id, data);
+
+      if (data.speed > 100) {
+        useAlikoJBStore.getState().addAlert({
+          type: "OVERSPEED",
+          message: `${id} speeding`,
+          time: Date.now(),
+        });
+      }
+    });
+  },
+};
+
+export default socket;
