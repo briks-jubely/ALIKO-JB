@@ -14,81 +14,74 @@ import {
 
 import { auth, db } from "../services/firebase";
 
-
 export async function registerUser({
   name,
   email,
   password
 }) {
 
-  const cred =
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-
-  await setDoc(
-    doc(db,"users",cred.user.uid),
-    {
-      name,
-      email,
-      role:"user",
-      academyAccess:true,
-      createdAt:serverTimestamp()
-    }
+  const cred = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
   );
 
+  const profile = {
+    name,
+    email,
+    role: "customer",
+    academyAccess: true,
+    createdAt: serverTimestamp()
+  };
 
-  return cred.user;
+  await setDoc(
+    doc(db, "users", cred.user.uid),
+    profile
+  );
+
+  return {
+    user: cred.user,
+    profile
+  };
 }
-
-
 
 export async function loginUser({
- email,
- password
-}){
+  email,
+  password
+}) {
 
- const cred =
- await signInWithEmailAndPassword(
-   auth,
-   email,
-   password
- );
+  const cred = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
+  const profile = await getUserProfile(
+    cred.user.uid
+  );
 
- const snap =
- await getDoc(
-   doc(db,"users",cred.user.uid)
- );
-
-
- return {
-   user:cred.user,
-   profile:snap.exists()
-      ? snap.data()
-      : null
- };
-
+  return {
+    user: cred.user,
+    profile
+  };
 }
 
+export async function getUserProfile(uid){
 
+  const snap = await getDoc(
+    doc(db,"users",uid)
+  );
+
+  if(!snap.exists()) return null;
+
+  return snap.data();
+
+}
 
 export async function logoutUser(){
-
- await signOut(auth);
-
+  await signOut(auth);
 }
 
-
-
 export function observeAuth(callback){
-
- return onAuthStateChanged(
-   auth,
-   callback
- );
-
+  return onAuthStateChanged(auth, callback);
 }
