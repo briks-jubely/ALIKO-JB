@@ -1,0 +1,6 @@
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+
+scripts:
+  buildCommand: npm install && npm run build

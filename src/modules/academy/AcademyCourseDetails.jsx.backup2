@@ -1,0 +1,218 @@
+import { useAcademyStore } from "../../store/academyStore";
+import { resolveCourseImage } from "./utils/assetResolver";
+
+function createList(data) {
+  if (!data) return null;
+
+  if (Array.isArray(data)) {
+    return (
+      <ul>
+        {data.map((item, i) => (
+          <li key={i}>
+            {typeof item === "string"
+              ? item
+              : (
+                <>
+                  <strong>{item.name || item.title || item.step}</strong>
+                  {item.description && <p>{item.description}</p>}
+                </>
+              )}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (typeof data === "object") {
+    return (
+      <ul>
+        {Object.values(data).map((item, i) => (
+          <li key={i}>
+            {typeof item === "string"
+              ? item
+              : (
+                <>
+                  <strong>{item.name || item.title}</strong>
+                  {item.description && <p>{item.description}</p>}
+                </>
+              )}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return <p>{String(data)}</p>;
+}
+
+function Section({ title, children }) {
+  if (!children) return null;
+
+  return (
+    <section className="academy-section">
+      <h3>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+export default function AcademyCourseDetails() {
+
+  const course = useAcademyStore(
+    (state) => state.selectedCourse
+  );
+
+  const closeCourse = useAcademyStore(
+    (state) => state.closeCourse
+  );
+
+  if (!course) return null;
+
+  return (
+
+    <div className="course-card academy-course-details">
+
+      <button
+        className="course-back-btn"
+        onClick={closeCourse}
+      >
+        ← Back to Courses
+      </button>
+
+      <img
+        src={resolveCourseImage(course.image || "hero.png")}
+        alt={course.title}
+        onError={(e)=>{
+          e.currentTarget.src =
+          resolveCourseImage("hero.png");
+        }}
+      />
+
+      <h2>{course.title}</h2>
+
+      <div className="course-meta">
+        Level: {course.level || "All"}
+        {" • "}
+        {course.duration || "Unknown"}
+      </div>
+
+      <Section title="📖 Description">
+        <p>
+          {course.fullDescription ||
+           course.fulldescription ||
+           course.description}
+        </p>
+      </Section>
+
+      <Section title="🎯 Objectives">
+        {createList(course.objectives)}
+      </Section>
+
+      <Section title="⚙️ System Overview">
+        <p>{course.systemOverview}</p>
+      </Section>
+
+      <Section title="🔌 Sensors">
+        {createList(course.sensors)}
+      </Section>
+
+      <Section title="💉 Actuators">
+        {createList(course.actuators)}
+      </Section>
+
+      <Section title="🔧 Working Principle">
+        {createList(course.workingPrinciple)}
+      </Section>
+
+      <Section title="🧰 Diagnostics">
+        {createList(course.diagnostics)}
+      </Section>
+
+      <Section title="📚 Lessons">
+        {createList(course.lessons)}
+      </Section>
+
+      <Section title="👨‍🏫 Instructor">
+        <p>{course.instructor}</p>
+      </Section>
+
+      {course.free ? (
+
+  <Section title="🎥 Course Media">
+
+    {course.video && (
+      <div style={{ marginBottom: "24px" }}>
+        <h4>Course Video</h4>
+
+        <video
+          controls
+          style={{
+            width: "100%",
+            borderRadius: "12px",
+            marginTop: "10px"
+          }}
+        >
+          <source src={course.video} />
+          Your browser does not support video playback.
+        </video>
+      </div>
+    )}
+
+    {course.pdf && (
+      <div>
+        <h4>Course Notes (PDF)</h4>
+
+        <iframe
+          src={course.pdf}
+          title="Course PDF"
+          width="100%"
+          height="700"
+          style={{
+            border: "none",
+            borderRadius: "12px",
+            marginTop: "10px"
+          }}
+        />
+      </div>
+    )}
+
+  </Section>
+
+) : (
+
+  <div className="locked-box">
+
+    <h3>🔒 Premium Course</h3>
+
+    <p>
+      This course requires payment before access.
+    </p>
+
+    <button
+      onClick={() =>
+        alert(`Contact Admin
+
+0750 198 672
+
+WhatsApp
+
+0620 198 672`)
+      }
+    >
+      Lipia Course
+    </button>
+
+  </div>
+
+)}
+
+      {course.certificate && (
+        <Section title="🏆 Certificate">
+          <p>Certificate of Completion Available</p>
+        </Section>
+      )}
+
+    </div>
+
+  );
+}

@@ -1,0 +1,21 @@
+import { useAlikoJBStore } from "../../store/alikoJBStore";
+import AlikoWidgetCard from "../../components/widgets/AlikoWidgetCard";
+import AlikoAlertsWidget from "./AlikoAlertsWidget";
+
+export default function AlikoHomeDashboard() {
+  const telemetry = useAlikoJBStore((s) => s.telemetry);
+
+  return (
+    <div>
+
+      <AlikoWidgetCard title="Engine Live Data">
+        Temperature: {telemetry.engineTemp}°C<br/>
+        Battery: {telemetry.battery}%<br/>
+        Speed: {telemetry.speed} km/h
+      </AlikoWidgetCard>
+
+      <AlikoAlertsWidget />
+
+    </div>
+  );
+}

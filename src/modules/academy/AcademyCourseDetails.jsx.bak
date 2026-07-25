@@ -1,0 +1,95 @@
+import { useAcademyStore } from "../../store/academyStore";
+import { resolveCourseImage } from "./utils/assetResolver";
+
+export default function AcademyCourseDetails(){
+
+  const course =
+    useAcademyStore(
+      (state)=>state.selectedCourse
+    );
+
+  const closeCourse =
+    useAcademyStore(
+      (state)=>state.closeCourse
+    );
+
+
+  if(!course){
+    return null;
+  }
+
+
+  return (
+
+    <div className="course-card academy-course-details">
+
+      <button
+        className="course-back-btn"
+        onClick={closeCourse}
+      >
+        ← Back Courses
+      </button>
+
+
+      {course.image && (
+        <img
+          src={resolveCourseImage(course.image)}
+          alt={course.title}
+          onError={(e)=>{e.currentTarget.src=resolveCourseImage("hero.png");}}
+        />
+      )}
+
+
+      <h2>
+        {course.title}
+      </h2>
+
+
+      <p>
+        {course.description}
+      </p>
+
+
+      <div className="course-meta">
+        Level: {course.level || "All"}
+        {" • "}
+        {course.duration || ""}
+      </div>
+
+
+
+      <div className="course-actions">
+
+
+      {
+        course.video &&
+        <button
+          onClick={() =>
+            window.open(course.video,"_blank")
+          }
+        >
+          ▶ Watch Course Video
+        </button>
+      }
+
+
+      {
+        course.pdf &&
+        <button
+          onClick={() =>
+            window.open(course.pdf,"_blank")
+          }
+        >
+          📄 Open PDF
+        </button>
+      }
+
+
+      </div>
+
+
+    </div>
+
+  );
+
+}
