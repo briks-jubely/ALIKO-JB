@@ -1,13 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAlikoNavStore } from "../store/alikoNavStore";
+
 import AlikoSidebar from "./AlikoSidebar";
 import AlikoTopbar from "./AlikoTopbar";
 import AlikoModuleLoader from "../components/layout/AlikoModuleLoader";
 import AlikoGpsPopup from "../components/map/AlikoGpsPopup";
+import AlikoAIChat from "../components/ai/AlikoAIChat";
 
 export default function AlikoAppShell() {
-
   const [gpsOpen, setGpsOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const aiOpen = useAlikoNavStore((s) => s.aiOpen);
+  const closeAI = useAlikoNavStore((s) => s.closeAI);
+
+  useEffect(() => {
+    const openGPS = () => setGpsOpen(true);
+
+    window.addEventListener("open-gps", openGPS);
+
+    return () => {
+      window.removeEventListener("open-gps", openGPS);
+    };
+  }, []);
+
 
   return (
     <>
@@ -18,7 +34,7 @@ export default function AlikoAppShell() {
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,.35)",
-            zIndex: 999
+            zIndex: 999,
           }}
         />
       )}
@@ -33,20 +49,19 @@ export default function AlikoAppShell() {
           background: "#111827",
           transition: "left .3s ease",
           zIndex: 1000,
-          boxShadow: "0 0 20px rgba(0,0,0,.4)"
+          boxShadow: "0 0 20px rgba(0,0,0,.4)",
         }}
       >
-        <AlikoSidebar collapsed={false}/>
+        <AlikoSidebar collapsed={false} />
       </div>
 
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "100vh"
+          height: "100vh",
         }}
       >
-
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           style={{
@@ -60,7 +75,7 @@ export default function AlikoAppShell() {
             background: "#2563eb",
             color: "#fff",
             cursor: "pointer",
-            zIndex: 1001
+            zIndex: 1001,
           }}
         >
           ☰
@@ -70,13 +85,13 @@ export default function AlikoAppShell() {
 
         <div style={{ padding: 10 }}>
           <button
-            onClick={() => setGpsOpen(true)}
+            onClick={() => window.dispatchEvent(new Event("open-gps"))}
             style={{
               padding: "10px 14px",
               border: "none",
               borderRadius: 8,
               background: "#2563eb",
-              color: "#fff"
+              color: "#fff",
             }}
           >
             📍 Open Live GPS
@@ -87,17 +102,22 @@ export default function AlikoAppShell() {
           style={{
             flex: 1,
             overflow: "auto",
-            padding: 20
+            padding: 20,
           }}
         >
           <AlikoModuleLoader />
         </main>
-
       </div>
 
       {gpsOpen && (
         <AlikoGpsPopup
           onClose={() => setGpsOpen(false)}
+        />
+      )}
+
+      {aiOpen && (
+        <AlikoAIChat
+          onClose={closeAI}
         />
       )}
     </>

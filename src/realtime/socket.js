@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8082", {
+const socket = io("https://aliko-jb-git-282712708896.us-central1.run.app", {
   transports: ["websocket"],
 });
 

@@ -1,63 +1,50 @@
-import { useAlikoJBStore } from "../../store/alikoJBStore";
+import "../../assets/css/layouts/dashboard.css";
 
 import MissionHeader from "./widgets/MissionHeader";
 import HomeOverview from "./widgets/HomeOverview";
-import SystemHealthCard from "./widgets/SystemHealthCard";
 import FleetOverview from "./widgets/FleetOverview";
 import AcademyOverview from "./widgets/AcademyOverview";
 import WorkshopOverview from "./widgets/WorkshopOverview";
 import RecentActivity from "./widgets/RecentActivity";
+import SystemHealthCard from "./widgets/SystemHealthCard";
 import QuickActions from "./widgets/QuickActions";
-import RecentCourses from "./widgets/RecentCourses";
 import AIAssistantCard from "./widgets/AIAssistantCard";
-
-import AlikoWidgetCard from "../../components/widgets/AlikoWidgetCard";
-import AlikoAlertsWidget from "./AlikoAlertsWidget";
 
 export default function AlikoHomeDashboard(){
 
-const fleet = useAlikoJBStore(s=>s.fleet);
-
-const vehicles = Object.values(fleet);
-
 return(
 
-<div>
+<div className="dashboard">
 
-<MissionHeader/>
+    <MissionHeader/>
 
-<HomeOverview/>
+    <HomeOverview/>
 
-<SystemHealthCard/>
+    <div className="dashboard-grid">
 
-<FleetOverview/>
+        <div className="dashboard-left">
 
-<AcademyOverview/>
+            <FleetOverview/>
 
-<WorkshopOverview/>
+            <AcademyOverview/>
 
-<RecentActivity/>
+            <WorkshopOverview/>
 
-<QuickActions/>
+            <RecentActivity/>
 
-<RecentCourses/>
+        </div>
 
-<AIAssistantCard/>
-import AIAssistantCard from "./widgets/AIAssistantCard";
+        <div className="dashboard-right">
 
-<AlikoWidgetCard title="Fleet Live Data">
+            <SystemHealthCard/>
 
-<p>Total Vehicles: {vehicles.length}</p>
+            <QuickActions/>
 
-<p>
-Active Vehicles:
-{" "}
-{vehicles.filter(v=>v?.speed>0).length}
-</p>
+            <AIAssistantCard/>
 
-</AlikoWidgetCard>
+        </div>
 
-<AlikoAlertsWidget/>
+    </div>
 
 </div>
 

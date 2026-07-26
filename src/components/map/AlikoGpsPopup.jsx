@@ -1,6 +1,7 @@
+import "../../assets/css/components/gps-popup.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAlikoJBStore } from "../../store/alikoJBStore";
 
 export default function AlikoGpsPopup({ onClose }) {
@@ -13,6 +14,10 @@ export default function AlikoGpsPopup({ onClose }) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const [full, setFull] = useState(false);
+
+  const [size, setSize] = useState({ width: 420, height: 320 });
+  const [resizing, setResizing] = useState(false);
+  const resizeStart = useRef({ x: 0, y: 0, width: 420, height: 320 });
 
   const startDrag = (e) => {
     if (full) return;
@@ -40,29 +45,53 @@ export default function AlikoGpsPopup({ onClose }) {
     setDragging(false);
   };
 
+  const startResize = (e) => {
+    e.stopPropagation();
+
+    resizeStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      width: size.width,
+      height: size.height,
+    };
+
+    setResizing(true);
+  };
+
+useEffect(() => {
+  const move = (e) => {
+    if (!resizing || full) return;
+
+    const w = Math.max(320, resizeStart.current.width + (e.clientX - resizeStart.current.x));
+    const h = Math.max(220, resizeStart.current.height + (e.clientY - resizeStart.current.y));
+
+    setSize({ width: w, height: h });
+  };
+
+  const stop = () => setResizing(false);
+
+  window.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", stop);
+
+  return () => {
+    window.removeEventListener("mousemove", move);
+    window.removeEventListener("mouseup", stop);
+  };
+}, [resizing, full]);
+
   return (
     <div
       ref={boxRef}
       onMouseMove={onMove}
       onMouseUp={stopDrag}
       onMouseLeave={stopDrag}
-      style={{
-        position: "fixed",
-        top: full ? 0 : pos.y,
-        left: full ? 0 : pos.x,
-        width: full ? "100vw" : "420px",
-        height: full ? "100vh" : "320px",
-        background: "#0f172a",
-        border: full ? "none" : "1px solid #334155",
-        borderRadius: full ? "0px" : "12px",
-        overflow: "hidden",
-        zIndex: 9999,
-        boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
-      }}
+      className={full ? "gps-popup fullscreen" : "gps-popup"}
+      style={{top: full ? 0 : pos.y,left: full ? 0 : pos.x,width: full ? "100vw" : size.width,height: full ? "100vh" : size.height}}
     >
       {/* HEADER (DRAG HANDLE) */}
       <div
         onMouseDown={startDrag}
+        className="gps-header"
         style={{
           height: "42px",
           display: "flex",
@@ -76,18 +105,18 @@ export default function AlikoGpsPopup({ onClose }) {
           userSelect: "none"
         }}
       >
-        <span>🚛 LIVE GPS (FLEET VIEW)</span>
+        <span className="gps-title">🚛 LIVE GPS (FLEET VIEW)</span>
 
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button onClick={() => setFull(!full)}>
+        <div className="gps-actions">
+          <button className="gps-btn" onClick={() => setFull(!full)}>
             {full ? "🗗" : "⛶"}
           </button>
-          <button onClick={onClose}>✖</button>
+          <button className="gps-btn close" onClick={onClose}>✖</button>
         </div>
       </div>
 
       {/* MAP */}
-      <div style={{ height: "calc(100% - 42px)", width: "100%" }}>
+      <div className="gps-map">
         <MapContainer
           center={[-6.7924, 39.2083]}
           zoom={12}
@@ -97,6 +126,7 @@ export default function AlikoGpsPopup({ onClose }) {
 
           {Object.entries(fleet || {}).map(([id, v]) => {
             if (!v?.lat || !v?.lng) return null;
+
 
             return (
               <Marker key={id} position={[v.lat, v.lng]}>
@@ -109,6 +139,7 @@ export default function AlikoGpsPopup({ onClose }) {
           })}
         </MapContainer>
       </div>
+      <div className="gps-resize" onMouseDown={startResize} />
     </div>
   );
 }

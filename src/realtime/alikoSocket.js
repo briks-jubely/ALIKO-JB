@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { useAlikoJBStore } from "../store/alikoJBStore";
 
-const socket = io("http://localhost:8082", {
+const socket = io("https://aliko-jb-git-282712708896.us-central1.run.app", {
   transports: ["websocket"],
   autoConnect: false,
 });

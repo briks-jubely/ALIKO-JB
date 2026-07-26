@@ -1,6 +1,9 @@
+import { useAlikoNavStore } from "../../../store/alikoNavStore";
 import "../../../assets/css/components/ai-assistant.css";
 
 export default function AIAssistantCard(){
+
+const openAI = useAlikoNavStore(s=>s.openAI);
 
 return(
 
@@ -16,30 +19,18 @@ READY
 
 </div>
 
-<p>
-
-Ask questions about:
-
-</p>
+<p>Ask questions about:</p>
 
 <ul>
-
 <li>🚛 Vehicle Diagnostics</li>
-
 <li>⚡ Auto Electrical Systems</li>
-
 <li>📚 Academy Courses</li>
-
 <li>🔧 Workshop Procedures</li>
-
 <li>📊 Fleet Management</li>
-
 </ul>
 
-<button>
-
+<button onClick={openAI}>
 Ask ALIKO AI
-
 </button>
 
 </div>
