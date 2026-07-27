@@ -1,0 +1,65 @@
+export const ROLES = {
+  ADMIN: "admin",
+  TECHNICIAN: "technician",
+  INSTRUCTOR: "instructor",
+  STUDENT: "student",
+  CUSTOMER: "customer",
+  GUEST: "guest",
+};
+
+export const MODULE_ACCESS = {
+
+  HOME: [
+    ROLES.GUEST,
+    ROLES.CUSTOMER,
+    ROLES.STUDENT,
+    ROLES.TECHNICIAN,
+    ROLES.INSTRUCTOR,
+    ROLES.ADMIN,
+  ],
+
+  FLEET: [
+    ROLES.TECHNICIAN,
+    ROLES.ADMIN,
+  ],
+
+  VEHICLES: [
+    ROLES.TECHNICIAN,
+    ROLES.ADMIN,
+  ],
+
+  DIAGNOSTICS: [
+    ROLES.TECHNICIAN,
+    ROLES.ADMIN,
+  ],
+
+  WORKSHOP: [
+    ROLES.TECHNICIAN,
+    ROLES.ADMIN,
+  ],
+
+  ACADEMY: [
+    ROLES.GUEST,
+    ROLES.CUSTOMER,
+    ROLES.STUDENT,
+    ROLES.INSTRUCTOR,
+    ROLES.ADMIN,
+  ],
+
+  PROFILE: [
+    ROLES.CUSTOMER,
+    ROLES.STUDENT,
+    ROLES.TECHNICIAN,
+    ROLES.INSTRUCTOR,
+    ROLES.ADMIN,
+  ],
+
+  SETTINGS: [
+    ROLES.CUSTOMER,
+    ROLES.STUDENT,
+    ROLES.TECHNICIAN,
+    ROLES.INSTRUCTOR,
+    ROLES.ADMIN,
+  ]
+
+};

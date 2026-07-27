@@ -1,0 +1,11 @@
+<div style={{ marginTop: 10 }}>
+  <h3>Latest Stage</h3>
+  <div>{latestStage}</div>
+
+  <h3>Vehicle Live Data</h3>
+  {data.slice(-5).map((d, i) => (
+    <div key={i} style={{ marginBottom: 5 }}>
+      <b>{d.stage}</b> - RPM: {d.vehicle?.rpm} | Speed: {d.vehicle?.speedKmh}
+    </div>
+  ))}
+</div>

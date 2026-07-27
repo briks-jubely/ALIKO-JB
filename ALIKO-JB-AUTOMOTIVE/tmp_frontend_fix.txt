@@ -1,0 +1,19 @@
+socket.onmessage = (event) => {
+  try {
+    const msg = JSON.parse(event.data);
+
+    console.log("WS IN:", msg);
+
+    if (msg.type === "telemetry") {
+      const payload = msg.payload;
+
+      setData((prev) => [...prev, payload]);
+
+      if (payload?.stage) {
+        setLatestStage(payload.stage);
+      }
+    }
+  } catch (e) {
+    console.log("WS PARSE ERROR", e);
+  }
+};
