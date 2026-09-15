@@ -3,3 +3,6 @@ backend/google-cloud-sdk/
 node_modules/
 dist/
 backend/google-cloud-cli-*.tar.gz
+
+# Firebase compiled recovery files
+firebase-live-recovery/
