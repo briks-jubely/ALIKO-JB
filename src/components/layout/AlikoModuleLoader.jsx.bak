@@ -1,5 +1,0 @@
-import HomeDashboard from "../dashboard/HomeDashboard";
-
-export default function AlikoModuleLoader() {
-  return <HomeDashboard />;
-}
